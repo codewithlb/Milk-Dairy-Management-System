@@ -1,9 +1,10 @@
 from fastapi import FastAPI
+from app.models.payment import Payment
 
 from app.database.database import Base, engine
 from app.models.farmer import Farmer
 from app.models.milk_collection import MilkCollection
-
+from app.routers import payment
 from app.routers import farmer
 from app.routers import milk_collection
 
@@ -14,6 +15,7 @@ app = FastAPI(title="Milk Dairy Management API")
 # Register Routers
 app.include_router(farmer.router)
 app.include_router(milk_collection.router)
+app.include_router(payment.router)
 
 
 @app.get("/")
