@@ -25,3 +25,10 @@ class MilkCollectionResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class MilkCollectionUpdate(BaseModel):
+    quantity: float
+    fat: float
+    snf: float
+    rate: float

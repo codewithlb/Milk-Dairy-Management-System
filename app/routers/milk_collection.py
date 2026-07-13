@@ -3,7 +3,10 @@ from sqlalchemy.orm import Session
 
 from app.database.database import get_db
 from app.models.milk_collection import MilkCollection
-from app.schemas.milk_collection import MilkCollectionCreate
+from app.schemas.milk_collection import (
+    MilkCollectionCreate,
+    MilkCollectionUpdate
+)
 
 router = APIRouter(
     prefix="/milk-collections",
@@ -57,3 +60,30 @@ def add_milk_collection(
 @router.get("/")
 def get_milk_collections(db: Session = Depends(get_db)):
     return db.query(MilkCollection).all()
+
+@router.put("/{milk_id}")
+def update_milk_collection(
+    milk_id: int,
+    milk: MilkCollectionUpdate,
+    db: Session = Depends(get_db)
+):
+    existing = db.query(MilkCollection).filter(
+        MilkCollection.id == milk_id
+    ).first()
+
+    if not existing:
+        raise HTTPException(
+            status_code=404,
+            detail="Milk collection not found."
+        )
+
+    existing.quantity = milk.quantity
+    existing.fat = milk.fat
+    existing.snf = milk.snf
+    existing.rate = milk.rate
+    existing.amount = milk.quantity * milk.rate
+
+    db.commit()
+    db.refresh(existing)
+
+    return existing
