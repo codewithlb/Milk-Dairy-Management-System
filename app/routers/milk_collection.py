@@ -1,7 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
+from sqlalchemy import func
+
 from app.database.database import get_db
+from datetime import date
 from app.models.milk_collection import MilkCollection
 from app.schemas.milk_collection import (
     MilkCollectionCreate,
@@ -108,4 +111,58 @@ def delete_milk_collection(
 
     return {
         "message": "Milk collection deleted successfully."
+    }
+
+@router.get("/farmer/{farmer_id}")
+def get_milk_by_farmer(
+    farmer_id: int,
+    db: Session = Depends(get_db)
+):
+    collections = db.query(MilkCollection).filter(
+        MilkCollection.farmer_id == farmer_id
+    ).all()
+
+    if not collections:
+        raise HTTPException(
+            status_code=404,
+            detail="No milk collections found for this farmer."
+        )
+
+    return collections
+
+@router.get("/date/{collection_date}")
+def get_milk_by_date(
+    collection_date: date,
+    db: Session = Depends(get_db)
+):
+    collections = db.query(MilkCollection).filter(
+        MilkCollection.collection_date == collection_date
+    ).all()
+
+    if not collections:
+        raise HTTPException(
+            status_code=404,
+            detail="No milk collections found for this date."
+        )
+
+    return collections
+
+@router.get("/summary/{collection_date}")
+def daily_summary(
+    collection_date: date,
+    db: Session = Depends(get_db)
+):
+    result = db.query(
+        func.count(MilkCollection.id),
+        func.sum(MilkCollection.quantity),
+        func.sum(MilkCollection.amount)
+    ).filter(
+        MilkCollection.collection_date == collection_date
+    ).first()
+
+    return {
+        "date": collection_date,
+        "total_collections": result[0] or 0,
+        "total_liters": result[1] or 0,
+        "total_amount": result[2] or 0
     }
