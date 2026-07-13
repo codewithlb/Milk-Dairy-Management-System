@@ -87,3 +87,25 @@ def update_milk_collection(
     db.refresh(existing)
 
     return existing
+
+@router.delete("/{milk_id}")
+def delete_milk_collection(
+    milk_id: int,
+    db: Session = Depends(get_db)
+):
+    milk = db.query(MilkCollection).filter(
+        MilkCollection.id == milk_id
+    ).first()
+
+    if not milk:
+        raise HTTPException(
+            status_code=404,
+            detail="Milk collection not found."
+        )
+
+    db.delete(milk)
+    db.commit()
+
+    return {
+        "message": "Milk collection deleted successfully."
+    }
