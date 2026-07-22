@@ -10,6 +10,15 @@ from app.services.payment_service import approve_payment
 from app.schemas.payment import PaymentUpdate
 from app.services.payment_service import mark_payment_paid,get_farmer_payments
 
+from app.services.payment_service import calculate_payment
+from fastapi.responses import FileResponse
+
+from app.services.pdf_service import generate_payment_receipt
+from app.models.farmer import Farmer
+import os
+
+
+
 router = APIRouter(
     prefix="/payments",
     tags=["Payments"]
@@ -64,3 +73,35 @@ def get_payment_history(
     db: Session = Depends(get_db)
 ):
     return get_farmer_payments(db, farmer_id)
+
+
+
+@router.get("/{payment_id}/receipt")
+def download_receipt(
+    payment_id: int,
+    db: Session = Depends(get_db)
+):
+    payment = db.query(Payment).filter(
+        Payment.id == payment_id
+    ).first()
+
+    if payment is None:
+        return {"message": "Payment not found"}
+
+    farmer = db.query(Farmer).filter(
+        Farmer.id == payment.farmer_id
+    ).first()
+
+    filename = f"receipt_{payment.id}.pdf"
+
+    generate_payment_receipt(
+        payment,
+        farmer,
+        filename
+    )
+
+    return FileResponse(
+        path=filename,
+        filename=filename,
+        media_type="application/pdf"
+    )
