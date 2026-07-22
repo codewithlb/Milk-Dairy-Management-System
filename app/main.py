@@ -7,6 +7,7 @@ from app.models.milk_collection import MilkCollection
 from app.routers import payment
 from app.routers import farmer
 from app.routers import milk_collection
+from app.routers import dashboard
 
 Base.metadata.create_all(bind=engine)
 
@@ -16,6 +17,7 @@ app = FastAPI(title="Milk Dairy Management API")
 app.include_router(farmer.router)
 app.include_router(milk_collection.router)
 app.include_router(payment.router)
+app.include_router(dashboard.router)
 
 
 @app.get("/")
