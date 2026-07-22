@@ -8,6 +8,7 @@ from app.routers import payment
 from app.routers import farmer
 from app.routers import milk_collection
 from app.routers import dashboard
+from app.routers import report
 
 Base.metadata.create_all(bind=engine)
 
@@ -18,6 +19,7 @@ app.include_router(farmer.router)
 app.include_router(milk_collection.router)
 app.include_router(payment.router)
 app.include_router(dashboard.router)
+app.include_router(report.router)
 
 
 @app.get("/")
