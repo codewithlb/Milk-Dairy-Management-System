@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from app.models.payment import Payment
+from app.models.admin import Admin
 
 from app.database.database import Base, engine
 from app.models.farmer import Farmer
@@ -10,6 +11,9 @@ from app.routers import milk_collection
 from app.routers import dashboard
 from app.routers import report
 from app.routers import ledger
+from app.routers import auth
+
+
 
 Base.metadata.create_all(bind=engine)
 
@@ -22,6 +26,8 @@ app.include_router(payment.router)
 app.include_router(dashboard.router)
 app.include_router(report.router)
 app.include_router(ledger.router)
+app.include_router(auth.router)
+
 
 
 @app.get("/")

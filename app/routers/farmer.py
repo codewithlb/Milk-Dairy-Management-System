@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.database.database import get_db
 from app.models.farmer import Farmer
 from app.schemas.farmer import FarmerCreate
+from app.dependencies.auth import get_current_admin
 
 router = APIRouter(prefix="/farmers", tags=["Farmers"])
 
@@ -24,5 +25,7 @@ def add_farmer(farmer: FarmerCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/")
-def get_farmers(db: Session = Depends(get_db)):
+def get_farmers(
+    db: Session = Depends(get_db)
+):
     return db.query(Farmer).all()
