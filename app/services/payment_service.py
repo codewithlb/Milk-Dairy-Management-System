@@ -104,3 +104,19 @@ def approve_payment(db: Session, payment_id: int):
     db.refresh(payment)
 
     return payment
+
+def get_farmer_payments(db: Session, farmer_id: int):
+    payments = (
+        db.query(Payment)
+        .filter(Payment.farmer_id == farmer_id)
+        .order_by(Payment.from_date.desc())
+        .all()
+    )
+
+    if not payments:
+        raise HTTPException(
+            status_code=404,
+            detail="No payments found for this farmer."
+        )
+
+    return payments

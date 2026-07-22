@@ -7,6 +7,9 @@ from app.database.database import get_db
 from app.schemas.payment import PaymentCreate, PaymentUpdate, PaymentResponse
 from app.services.payment_service import approve_payment
 
+from app.schemas.payment import PaymentUpdate
+from app.services.payment_service import mark_payment_paid,get_farmer_payments
+
 router = APIRouter(
     prefix="/payments",
     tags=["Payments"]
@@ -32,8 +35,7 @@ def get_all_payments(db: Session = Depends(get_db)):
     return db.query(Payment).all()
 
 
-from app.schemas.payment import PaymentUpdate
-from app.services.payment_service import mark_payment_paid
+
 
 
 @router.patch("/{payment_id}/pay", response_model=PaymentResponse)
@@ -54,3 +56,11 @@ def approve_payment_route(
     db: Session = Depends(get_db)
 ):
     return approve_payment(db, payment_id)
+
+
+@router.get("/farmer/{farmer_id}", response_model=list[PaymentResponse])
+def get_payment_history(
+    farmer_id: int,
+    db: Session = Depends(get_db)
+):
+    return get_farmer_payments(db, farmer_id)
