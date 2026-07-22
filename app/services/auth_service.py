@@ -28,8 +28,11 @@ def login_admin(
         )
 
     token = create_access_token(
-        {"sub": admin.username}
-    )
+    {
+        "sub": admin.username,
+        "role": admin.role
+    }
+)
 
     return {
         "access_token": token,
