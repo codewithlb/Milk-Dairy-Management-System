@@ -1,3 +1,4 @@
+from app.services.milk_collection_service import create_milk_collection
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -22,43 +23,8 @@ def add_milk_collection(
     milk: MilkCollectionCreate,
     db: Session = Depends(get_db)
 ):
-    # Check for duplicate entry
-    print("Farmer ID:", milk.farmer_id)
-    print("Date:", milk.collection_date)
-    print("Shift:", milk.shift)
-    existing_entry = db.query(MilkCollection).filter(
-        MilkCollection.farmer_id == milk.farmer_id,
-        MilkCollection.collection_date == milk.collection_date,
-        MilkCollection.shift == milk.shift
-    ).first()
-    print("Existing Entry:", existing_entry)
+    return create_milk_collection(db, milk)
 
-    if existing_entry:
-     raise HTTPException(
-        status_code=400,
-        detail="Milk entry already exists for this farmer, date and shift."
-    )
-
-    # Calculate amount
-    amount = milk.quantity * milk.rate
-
-    # Create new entry
-    new_entry = MilkCollection(
-        farmer_id=milk.farmer_id,
-        collection_date=milk.collection_date,
-        shift=milk.shift,
-        quantity=milk.quantity,
-        fat=milk.fat,
-        snf=milk.snf,
-        rate=milk.rate,
-        amount=amount
-    )
-
-    db.add(new_entry)
-    db.commit()
-    db.refresh(new_entry)
-
-    return new_entry
 
 @router.get("/")
 def get_milk_collections(db: Session = Depends(get_db)):

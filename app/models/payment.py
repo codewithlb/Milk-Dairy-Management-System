@@ -1,6 +1,6 @@
-from sqlalchemy import Column, Integer, Float, Date, String, ForeignKey
+from sqlalchemy import Column, Integer, Float, String, Date, ForeignKey
 from app.database.database import Base
-
+from datetime import date
 
 class Payment(Base):
     __tablename__ = "payments"
@@ -15,3 +15,6 @@ class Payment(Base):
     total_amount = Column(Float)
 
     status = Column(String, default="Pending")
+
+    payment_date = Column(Date, nullable=True)
+    payment_method = Column(String, nullable=True)
