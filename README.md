@@ -220,3 +220,7 @@ backend/
 
 └── README.md
 
+
+## Payment Module
+
+Payment management for farmers is under development.
