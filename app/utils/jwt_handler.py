@@ -1,7 +1,16 @@
+import os
 from datetime import datetime, timedelta
+
+from dotenv import load_dotenv
 from jose import jwt, JWTError
 
-SECRET_KEY = "your-secret-key-change-this-in-production"
+load_dotenv()
+
+SECRET_KEY = os.getenv("SECRET_KEY")
+
+if not SECRET_KEY:
+    raise ValueError("SECRET_KEY is not set")
+
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
@@ -15,13 +24,11 @@ def create_access_token(data: dict):
 
     to_encode.update({"exp": expire})
 
-    encoded_jwt = jwt.encode(
+    return jwt.encode(
         to_encode,
         SECRET_KEY,
         algorithm=ALGORITHM
     )
-
-    return encoded_jwt
 
 
 def verify_token(token: str):
@@ -32,5 +39,6 @@ def verify_token(token: str):
             algorithms=[ALGORITHM]
         )
         return payload
+
     except JWTError:
         return None

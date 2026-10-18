@@ -7,6 +7,7 @@ from sqlalchemy import (
     ForeignKey,
     UniqueConstraint
 )
+from sqlalchemy.orm import relationship
 
 from app.database.database import Base
 
@@ -25,6 +26,12 @@ class MilkCollection(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     farmer_id = Column(Integer, ForeignKey("farmers.id"))
+
+    farmer = relationship(
+        "Farmer",
+        back_populates="milk_collections"
+    )
+
     collection_date = Column(Date)
     shift = Column(String)
     quantity = Column(Float)

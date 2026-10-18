@@ -1,8 +1,10 @@
 from pydantic import BaseModel
 from datetime import date
 
+
 class PaymentUpdate(BaseModel):
     payment_method: str
+
 
 class PaymentCreate(BaseModel):
     farmer_id: int
@@ -13,6 +15,7 @@ class PaymentCreate(BaseModel):
 class PaymentResponse(BaseModel):
     id: int
     farmer_id: int
+    farmer_name: str
     from_date: date
     to_date: date
     total_liters: float
@@ -21,5 +24,3 @@ class PaymentResponse(BaseModel):
 
     class Config:
         from_attributes = True
-
- 

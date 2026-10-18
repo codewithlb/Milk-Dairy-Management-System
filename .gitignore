@@ -1,4 +1,26 @@
+# Virtual Environment
 venv/
+
+# Python cache
 __pycache__/
-*.pyc
+*.py[cod]
+
+# Environment variables / secrets
 .env
+.env.*
+
+# Local SQLite database
+*.db
+
+# Generated reports
+*.xlsx
+
+# Generated PDF receipts
+*.pdf
+
+# IDE
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
