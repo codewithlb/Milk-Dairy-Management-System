@@ -24,3 +24,11 @@ __pycache__/
 # OS files
 .DS_Store
 Thumbs.db
+# Docker
+wheels/
+linux_wheels/
+
+# Database backups
+*.dump
+*.sql
+*.backup
